@@ -1,3 +1,4 @@
-.abuild
+*.rsa
+*.rsa.pub
 packages
-packages.old
+abuild

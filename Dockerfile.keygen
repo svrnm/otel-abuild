@@ -1,0 +1,14 @@
+FROM alpine as keygen
+
+RUN apk update; apk add abuild
+RUN adduser builder; adduser builder abuild
+
+USER builder
+
+WORKDIR /home/builder
+
+RUN abuild-keygen -a -n
+
+FROM scratch as result
+
+COPY --from=keygen /home/builder/.abuild/ /

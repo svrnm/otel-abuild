@@ -1,7 +1,7 @@
 # Contributor: Severin Neumann <neumanns@cisco.com>
 # Maintainer:
 pkgname=opentelemetry-cpp
-pkgver=1.8.1
+pkgver=1.8.2
 pkgrel=0
 pkgdesc="OpenTelemetry C++"
 url="https://opentelemetry.io/"
@@ -12,7 +12,6 @@ depends_dev="
 	$pkgname-exporter-otlp-common=$pkgver-r$pkgrel
 	$pkgname-exporter-otlp-http=$pkgver-r$pkgrel
 	$pkgname-exporter-otlp-grpc=$pkgver-r$pkgrel
-	$pkgname-exporter-jaeger=$pkgver-r$pkgrel
 	$pkgname-exporter-zipkin=$pkgver-r$pkgrel
 "
 makedepends="cmake grpc-dev re2-dev protobuf-dev c-ares-dev curl-dev nlohmann-json thrift-dev boost-dev"
@@ -23,7 +22,6 @@ subpackages="
 	$pkgname-exporter-otlp-common
 	$pkgname-exporter-otlp-http
 	$pkgname-exporter-otlp-grpc
-	$pkgname-exporter-jaeger
 	$pkgname-exporter-zipkin
 	"
 source="https://github.com/open-telemetry/opentelemetry-cpp/archive/v$pkgver/opentelemetry-cpp-v$pkgver.tar.gz"
@@ -36,21 +34,19 @@ prepare() {
 build() {
 	# Required until https://github.com/open-telemetry/opentelemetry-cpp/issues/1940 is fixed
 	export LDFLAGS="$LDFLAGS -Wl,--copy-dt-needed-entries"
-	# -DBUILD_TESTING="$(want_check && echo ON || echo OFF)" \
-	# -DBUILD_W3CTRACECONTEXT_TEST="$(want_check && echo ON || echo OFF)" \
 
 	cmake -B build \
 		-DCMAKE_INSTALL_PREFIX=/usr \
 		-DBUILD_SHARED_LIBS=ON \
 		-DCMAKE_POSITION_INDEPENDENT_CODE=ON \
-		-DBUILD_TESTING=OFF \
-		-DBUILD_W3CTRACECONTEXT_TEST=OFF \
+		-DBUILD_TESTING="$(want_check && echo ON || echo OFF)" \
+		-DBUILD_W3CTRACECONTEXT_TEST="$(want_check && echo ON || echo OFF)" \
 		-DCMAKE_BUILD_TYPE=Release \
 		-DWITH_EXAMPLES=OFF \
 		-DWITH_ZPAGES=OFF \
 		-DWITH_OTLP=ON \
 		-DWITH_OTLP_HTTP=ON \
-		-DWITH_JAEGER=ON \
+		-DWITH_JAEGER=OFF \
 		-DWITH_ZIPKIN=ON \
 		-DWITH_PROMETHEUS=OFF \
 		-DWITH_LOGS_PREVIEW=OFF \
@@ -61,7 +57,7 @@ build() {
 
 check() {
 	cd build
-	# CTEST_OUTPUT_ON_FAILURE=TRUE ctest
+	CTEST_OUTPUT_ON_FAILURE=TRUE ctest
 }
 
 package() {
@@ -93,12 +89,6 @@ zipkin() {
 	amove usr/lib/libopentelemetry_exporter_zipkin*
 }
 
-jaeger() {
-	pkgdesc="OpenTelemetry C++ OTLP Jaeger exporter"
-	depends="$pkgname=$pkgver-r$pkgrel"
-	amove usr/lib/libopentelemetry_exporter_jaeger*
-}
-
 sha512sums="
-10e440fde8f60763cfbd1a4baf2c143bbfcffd5e8ec6f3c3c80498ff4a13d2ef424b255f74ef1e22231a4369789bbd41534bd47f964137e28dd5b0adfbf4d5ac  opentelemetry-cpp-v1.8.1.tar.gz
+5d3efb7c31626acd9655b795da497ef3829a88f1e33532f26d011fda01ec41e08e88539900151224f5c19161d9bc1f76e502f14a358c4e01440d832432cd0c0b  opentelemetry-cpp-v1.8.2.tar.gz
 "

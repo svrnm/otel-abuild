@@ -1,14 +1,40 @@
 # Alpine APK for OpenTelemetry C++
 
-This project contains an [APKBUILD](./opentelemetry-cpp/APKBUILD) file for [OpenTelemetry C++](https://github.com/open-telemetry/opentelemetry-cpp)
+This project contains an [APKBUILD](./APKBUILD) file for [OpenTelemetry C++](https://github.com/open-telemetry/opentelemetry-cpp)
 
-Follow the instructions on [creating an Alpine package](https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package) to build the following packages:
+Before you can build those packages you need to create a signing key:
 
-* opentelemetry-cpp-1.8.1-r0.apk
-* opentelemetry-cpp-dev-1.8.1-r0.apk
-* opentelemetry-cpp-doc-1.8.1-r0.apk
-* opentelemetry-cpp-exporter-jaeger-1.8.1-r0.apk
-* opentelemetry-cpp-exporter-otlp-common-1.8.1-r0.apk
-* opentelemetry-cpp-exporter-otlp-grpc-1.8.1-r0.apk
-* opentelemetry-cpp-exporter-otlp-http-1.8.1-r0.apk
-* opentelemetry-cpp-exporter-zipkin-1.8.1-r0.apk
+```
+./keygen.sh
+```
+
+This will create a folder called `abuild` with a private-public-key pair. Make a copy of them.
+
+To build the packages run the following:
+
+```
+./build.sh
+```
+
+You will have a folder `packages` now that holds the following packages:
+
+* opentelemetry-cpp
+* opentelemetry-cpp-dev
+* opentelemetry-cpp-doc
+* opentelemetry-cpp-exporter-jaeger
+* opentelemetry-cpp-exporter-otlp-common
+* opentelemetry-cpp-exporter-otlp-grpc
+* opentelemetry-cpp-exporter-otlp-http
+* opentelemetry-cpp-exporter-zipkin
+
+To try them out run the following
+
+```
+docker run -v ${PWD}/packages:/packages --rm -t -i alpine
+```
+
+Within the container you can now install those packages:
+
+```
+apk search --allow-untrusted --repository /packages opentelemetry
+```
