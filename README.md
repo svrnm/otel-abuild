@@ -21,7 +21,6 @@ You will have a folder `packages` now that holds the following packages:
 * opentelemetry-cpp
 * opentelemetry-cpp-dev
 * opentelemetry-cpp-doc
-* opentelemetry-cpp-exporter-jaeger
 * opentelemetry-cpp-exporter-otlp-common
 * opentelemetry-cpp-exporter-otlp-grpc
 * opentelemetry-cpp-exporter-otlp-http
@@ -36,5 +35,5 @@ docker run -v ${PWD}/packages:/packages --rm -t -i alpine
 Within the container you can now install those packages:
 
 ```
-apk search --allow-untrusted --repository /packages opentelemetry
+apk search --allow-untrusted --repository /packages opentelemetry-cpp
 ```
