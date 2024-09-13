@@ -1,4 +1,4 @@
-FROM alpine as builder
+FROM alpine:edge as builder
 
 RUN apk update && apk add alpine-sdk
 
@@ -11,6 +11,7 @@ USER builder
 WORKDIR /home/builder
 
 COPY --chown=builder:abuild ./abuild ./.abuild
+COPY *.patch .
 COPY ./APKBUILD .
 
 RUN abuild -r
